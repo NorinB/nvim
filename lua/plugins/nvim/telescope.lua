@@ -260,7 +260,8 @@ return {
       return {
         extensions = {
           live_grep_args = {
-            file_ignore_patterns = {},
+            additional_args = { "--no-ignore", "--hidden" },
+            file_ignore_patterns = { ".git" },
             auto_quoting = true,
             get_status_text = get_status_text,
             mappings = {
