@@ -91,7 +91,31 @@ return {
             cwd = function()
               return vim.fn.getcwd()
             end,
-            jestCommand = "npm test --",
+            jestConfigFile = function(file_path)
+              if string.match(file_path, "e2e") ~= nil then
+                local start_dir = vim.fn.fnamemodify(file_path, ":h")
+                local matches = vim.fs.find(function(name, path)
+                  local lname = name:lower()
+                  return lname:find "jest" ~= nil and lname:find "e2e" ~= nil
+                end, {
+                  path = start_dir,
+                  upward = true,
+                  type = "file",
+                  limit = math.huge,
+                  stop = vim.fn.fnamemodify(vim.fn.getcwd(), ":h"),
+                })
+                if #matches > 0 then
+                  return matches[#matches]
+                end
+              end
+              return nil
+            end,
+            jestCommand = function(file_path)
+              if string.match(file_path, "e2e") ~= nil then
+                return "npx jest"
+              end
+              return "npx jest"
+            end,
           },
         },
       }
