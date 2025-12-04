@@ -46,7 +46,7 @@ map("n", "<leader>Wo", "<CMD>only<CR>", { desc = "Window Close others" })
 -- File operations
 map("n", "<leader>w", "<CMD>update<CR>", { desc = "General Copy whole file" })
 map("n", "<leader>C", "<CMD>%y+<CR>", { desc = "General Copy whole file" })
-map("n", "<leader>n", ":norm ", { desc = "General Start norm command" })
+map({ "n", "x" }, "<leader>n", ":norm ", { desc = "General Start norm command" })
 map("n", "<leader>r", ":%s///g<left><left><left>", { desc = "General Start substitute command" })
 
 -- Line numbers
