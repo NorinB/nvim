@@ -647,7 +647,6 @@ return {
         }
       end,
       hide = {
-        cursorline = true,
         focused_win = true,
       },
       window = {
