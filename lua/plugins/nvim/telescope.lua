@@ -344,7 +344,7 @@ return {
       telescope.setup {
         extensions = {
           smart_open = {
-            result_limit = 40,
+            result_limit = 100,
             get_status_text = get_status_text,
           },
         },
