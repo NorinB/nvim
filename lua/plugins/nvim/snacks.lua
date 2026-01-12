@@ -146,6 +146,7 @@ return {
               return not is_buf_visible(bufnr)
             end,
           }
+          Snacks.notify "Closed other buffers (except for visible ones)"
         end,
         desc = "Buffer Close others (respecting open buffers in splits)",
       },
@@ -153,6 +154,7 @@ return {
         "<leader>bO",
         function()
           Snacks.bufdelete.other()
+          Snacks.notify "Closed other buffers (except for the currently focused one)"
         end,
         desc = "Buffer Close others (all others)",
       },
