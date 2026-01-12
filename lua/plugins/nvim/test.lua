@@ -10,6 +10,7 @@ return {
       "sidlatau/neotest-dart",
       "nvim-neotest/neotest-jest",
       "weilbith/neotest-gradle",
+      "Issafalcon/neotest-dotnet",
     },
     cmd = "Neotest summary",
     event = { "BufEnter *spec*", "BufEnter *test*" },
@@ -117,6 +118,7 @@ return {
               return "npx jest"
             end,
           },
+          require "neotest-dotnet",
         },
       }
     end,
