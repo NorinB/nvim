@@ -10,7 +10,7 @@ return {
       "sidlatau/neotest-dart",
       "nvim-neotest/neotest-jest",
       "weilbith/neotest-gradle",
-      "Issafalcon/neotest-dotnet",
+      "nsidorenco/neotest-vstest",
     },
     cmd = "Neotest summary",
     event = { "BufEnter *spec*", "BufEnter *test*" },
@@ -118,7 +118,11 @@ return {
               return "npx jest"
             end,
           },
-          require "neotest-dotnet",
+          require "neotest-vstest" {
+            dap_settings = {
+              type = "coreclr",
+            },
+          },
         },
       }
     end,

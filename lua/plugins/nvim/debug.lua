@@ -157,6 +157,14 @@ return {
         dap.adapters["chrome"] = dap.adapters["pwa-chrome"]
       end
 
+      local csharp_adapter = function()
+        dap.adapters.coreclr = {
+          type = "executable",
+          command = "netcoredbg",
+          args = { "--interpreter=vscode" },
+        }
+      end
+
       -- Configurations
       local javascript_configurations = function()
         dap.configurations.javascript = {
@@ -302,6 +310,7 @@ return {
         flutter_adapter()
         javascript_adapter()
         chrome_adapter()
+        csharp_adapter()
       end
 
       M.setup_configurations = function()
