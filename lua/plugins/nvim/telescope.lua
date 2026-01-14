@@ -117,7 +117,15 @@ return {
       { "<leader>fma", "<CMD>Telescope marks<CR>", desc = "Telescope Marks" },
       { "<leader>fgs", "<CMD>Telescope grep_string<CR>", mode = { "n", "v" }, desc = "Telescope Grep String" },
       { "<leader>fsp", "<CMD>Telescope spell_suggest<CR>", desc = "Telescope Spell suggest" },
-      { "<leader>fp", "<CMD>Telescope pickers<CR>", desc = "Telescope Pickers" },
+      {
+        "<leader>fp",
+        function()
+          require("telescope.builtin").pickers {
+            initial_mode = "normal",
+          }
+        end,
+        desc = "Telescope Pickers",
+      },
       {
         "<leader>fz",
         function()
