@@ -88,7 +88,6 @@ return {
         end)
         :totable()
       require("nvim-treesitter").install(parsers_to_install)
-      require("nvim-treesitter").update()
 
       -- Add Custom Filetypes
       local function is_hypr_conf(path)
