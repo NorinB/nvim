@@ -292,7 +292,6 @@ M.defaults = function()
   local lsp_servers = {
     "cssls",
     "docker_compose_language_service",
-    "jsonls",
     "kotlin_language_server",
     "pyright",
     "qmlls",
@@ -420,6 +419,8 @@ M.defaults = function()
     },
   })
   vim.lsp.enable "html"
+
+  vim.lsp.config("jsonls", {})
 
   -- lua
   vim.lsp.config("lua_ls", {
