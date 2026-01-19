@@ -348,6 +348,7 @@ return {
         opts = {
           fps = 60,
           background_colour = "#FDFD9A",
+          top_down = false,
         },
       },
     },
