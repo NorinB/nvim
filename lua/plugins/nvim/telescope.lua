@@ -110,7 +110,7 @@ return {
       { "<leader>fj", "<CMD>Telescope jumplist<CR>", desc = "Telescope Jumplist" },
       { "<leader>fco", "<CMD>Telescope commands<CR>", desc = "Telescope Commands" },
       { "<leader>fch", "<CMD>Telescope command_history<CR>", desc = "Telescope Command history" },
-      { "<leader>fv", "<CMD>Telescope vim_options<CR>", desc = "Telescope Vim Options" },
+      { "<leader>fvo", "<CMD>Telescope vim_options<CR>", desc = "Telescope Vim Options" },
       { "<leader>fsy", "<CMD>Telescope lsp_document_symbols<CR>", desc = "Telescope Symbols" },
       { "<leader>fr", "<CMD>Telescope resume<CR>", desc = "Telescope Resume last search" },
       { "<leader>fk", "<CMD>Telescope keymaps<CR>", desc = "Telescope Keybindings" },

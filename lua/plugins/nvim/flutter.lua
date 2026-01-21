@@ -16,6 +16,13 @@ return {
         desc = "Telescope Flutter commands",
       },
       {
+        "<leader>fvm",
+        function()
+          require("telescope").extensions.flutter.fvm()
+        end,
+        desc = "Telescope Flutter fvm",
+      },
+      {
         "<leader>flv",
         function()
           require("telescope").extensions.flutter.fvm()
@@ -66,6 +73,7 @@ return {
           end,
         },
         root_patterns = { ".git", "android", "ios", "macos", "linux" },
+        fvm = true,
         widget_guides = {
           enabled = true,
         },
