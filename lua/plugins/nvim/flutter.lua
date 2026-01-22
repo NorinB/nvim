@@ -22,13 +22,6 @@ return {
         end,
         desc = "Telescope Flutter fvm",
       },
-      {
-        "<leader>flv",
-        function()
-          require("telescope").extensions.flutter.fvm()
-        end,
-        desc = "Telescope Flutter commands",
-      },
       { "<leader>fld", "<CMD>FlutterDevices<CR>", desc = "Flutter Select Device" },
       { "<leader>fle", "<CMD>FlutterEmulators<CR>", desc = "Flutter Emulators" },
       { "<leader>flr", "<CMD>FlutterRun<CR>", desc = "Flutter Run" },

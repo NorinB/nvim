@@ -83,7 +83,7 @@ return {
       return {
         adapters = {
           require "neotest-dart" {
-            command = "flutter",
+            command = "fvm flutter",
             use_lsp = true,
             custom_test_method_names = { "blocTest" },
             additional_args = { "--no-pub" },

@@ -9,6 +9,7 @@
 
 ## Optional Packages
 - go (for installing hyprls)
+- fvm (when using flutter)
 
 ## NPM Packages
 - nodemon
