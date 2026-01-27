@@ -91,8 +91,9 @@ return {
         desc = "Telescope Oldfiles in cwd",
       },
       { "<leader>fz", "<CMD>Telescope current_buffer_fuzzy_find<CR>", desc = "Telescope Current Buffer" },
+      { "<leader>fgb", "<CMD>Telescope git_branches<CR>", desc = "Telescope Git branches" },
       { "<leader>fgc", "<CMD>Telescope git_commits<CR>", desc = "Telescope Git commits" },
-      { "<leader>fgt", "<CMD>Telescope git_status<CR>", desc = "Telescope Git status" },
+      { "<leader>fgs", "<CMD>Telescope git_status<CR>", desc = "Telescope Git status" },
       { "<leader>fgh", "<CMD>Telescope git_file_history<CR>", desc = "Telescope Git file history" },
       { "<leader>fte", "<CMD>Telescope terms<CR>", desc = "Telescope Terminals" },
       {
@@ -115,7 +116,12 @@ return {
       { "<leader>fr", "<CMD>Telescope resume<CR>", desc = "Telescope Resume last search" },
       { "<leader>fk", "<CMD>Telescope keymaps<CR>", desc = "Telescope Keybindings" },
       { "<leader>fma", "<CMD>Telescope marks<CR>", desc = "Telescope Marks" },
-      { "<leader>fgs", "<CMD>Telescope grep_string<CR>", mode = { "n", "v" }, desc = "Telescope Grep String" },
+      {
+        "<leader>fst",
+        "<CMD>Telescope grep_string<CR>",
+        mode = { "n", "v" },
+        desc = "Telescope Grep String (find string)",
+      },
       { "<leader>fsp", "<CMD>Telescope spell_suggest<CR>", desc = "Telescope Spell suggest" },
       {
         "<leader>fp",
