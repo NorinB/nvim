@@ -150,6 +150,8 @@ M.setup_keymaps = function()
     M.setup_colors()
   end, opts "Lsp Reload Lsp config")
 
+  map("n", "<leader>lS", "<CMD>LspStart<CR>", opts "Lsp Start")
+
   map("n", "<leader>lgD", function()
     send_lsp_notification "Go to declaration: "
     vim.lsp.buf.declaration()
