@@ -91,7 +91,21 @@ return {
         desc = "Telescope Oldfiles in cwd",
       },
       { "<leader>fz", "<CMD>Telescope current_buffer_fuzzy_find<CR>", desc = "Telescope Current Buffer" },
-      { "<leader>fgb", "<CMD>Telescope git_branches<CR>", desc = "Telescope Git branches" },
+      {
+        "<leader>fgb",
+        function()
+          require("telescope.builtin").git_branches {
+            attach_mappings = function(_, map)
+              local actions = require "telescope.actions"
+              map({ "i", "n" }, "<CR>", actions.git_switch_branch)
+              map({ "i", "n" }, "<C-o>", actions.git_checkout)
+
+              return true
+            end,
+          }
+        end,
+        desc = "Telescope Git branches",
+      },
       { "<leader>fgc", "<CMD>Telescope git_commits<CR>", desc = "Telescope Git commits" },
       { "<leader>fgs", "<CMD>Telescope git_status<CR>", desc = "Telescope Git status" },
       { "<leader>fgh", "<CMD>Telescope git_file_history<CR>", desc = "Telescope Git file history" },
