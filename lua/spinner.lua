@@ -14,6 +14,9 @@ local config = {
     "⠇",
     "⠏",
   },
+  show_spinner_regexes = {
+    "projects",
+  },
 }
 
 local spinner_index = 1
@@ -21,8 +24,19 @@ local spinner_timer = nil
 local spinner_buf = nil
 local spinner_win = nil
 
+M.should_show_spinner = function()
+  for _, pattern in ipairs(config.show_spinner_regexes) do
+    local cwd_contains_pattern = string.match(vim.fn.expand "%:p", pattern) ~= nil
+    if cwd_contains_pattern then
+      return true
+    end
+  end
+  return false
+end
+
 --- Show a spinner at the specified position.
 function M.show(msg, title)
+  M.hide()
   msg = msg ~= nil and msg or ""
   -- Default position: the top right corner
   local win_options = {
