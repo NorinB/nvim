@@ -47,6 +47,7 @@ function M.show(msg, title)
       vim.notify((#msg > 0 and " " .. msg .. "    " or "") .. (#msg > 0 and " " or ""), vim.log.levels.INFO, {
         id = config.notification_id,
         title = "LSP",
+        timeout = 100,
         opts = function(notification)
           notification.icon = config.spinner_frames[spinner_index]
           spinner_id = notification.id
