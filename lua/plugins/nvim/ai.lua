@@ -91,6 +91,7 @@ return {
                   { idx = 6, text = "@quickfix", desc = "quickfix list" },
                   { idx = 7, text = "@diff", desc = "git diff" },
                   { idx = 8, text = "@marks", desc = "marks" },
+                  { idx = 9, text = "no context", desc = "no specific context" },
                 },
                 entry_maker = function(e)
                   return {
@@ -109,12 +110,16 @@ return {
                 actions.select_default:replace(function()
                   local selection = actions_state.get_selected_entry()
                   actions.close(prompt_buffer)
-                  require("opencode").ask(selection.value.text .. ": ", { submit = true })
+                  if string.match(selection.value.text, "no context") ~= nil then
+                    require("opencode").ask("", { submit = true })
+                  else
+                    require("opencode").ask(selection.value.text .. ": ", { submit = true })
+                  end
                 end)
                 return true
               end,
               sorter = conf.generic_sorter {},
-              layout_config = { height = 13, width = 50 },
+              layout_config = { height = 14, width = 50 },
               get_status_text = function()
                 return ""
               end,
