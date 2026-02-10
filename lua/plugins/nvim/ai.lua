@@ -126,6 +126,7 @@ return {
             })
             :find()
         end,
+        mode = { "n", "x" },
         desc = "Opencode Scroll down",
       },
     },
