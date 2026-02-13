@@ -124,7 +124,7 @@ return {
       local function workspace()
         return " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
       end
-      local function flutterStatusLine()
+      local function flutter_status_line()
         local decorations = vim.g.flutter_tools_decorations
         if not decorations then
           return ""
@@ -207,7 +207,7 @@ return {
           "searchcount",
           "selectioncount",
           node_package_info,
-          flutterStatusLine,
+          flutter_status_line,
           {
             "lsp_status",
             icon = "",
