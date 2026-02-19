@@ -185,6 +185,21 @@ return {
         }
       end
 
+      local function send_selection_or_all_to_qflist(prompt_bufnr)
+        local actions = require "telescope.actions"
+        local action_state = require "telescope.actions.state"
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local selections = picker:get_multi_selection()
+
+        if #selections > 0 then
+          actions.send_selected_to_qflist(prompt_bufnr)
+        else
+          actions.send_to_qflist(prompt_bufnr)
+        end
+
+        actions.open_qflist(prompt_bufnr)
+      end
+
       return {
         pickers = {
           live_grep = {
@@ -230,6 +245,7 @@ return {
               ["<C-LEFT>"] = require("telescope.actions").preview_scrolling_left,
               ["<C-RIGHT>"] = require("telescope.actions").preview_scrolling_right,
               ["<C-f>"] = flash,
+              ["<C-q>"] = send_selection_or_all_to_qflist,
             },
             n = {
               ["q"] = require("telescope.actions").close,
@@ -238,6 +254,7 @@ return {
               ["<C-UP>"] = require("telescope.actions").preview_scrolling_up,
               ["<C-LEFT>"] = require("telescope.actions").preview_scrolling_left,
               ["<C-RIGHT>"] = require("telescope.actions").preview_scrolling_right,
+              ["<C-q>"] = send_selection_or_all_to_qflist,
             },
           },
         },
