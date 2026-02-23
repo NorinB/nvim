@@ -76,6 +76,18 @@ return {
           prev_thread = { lhs = "[T", desc = "Octo Review move to previous thread" },
         },
       },
+      gh_env = function()
+        local ok, octo_utils = pcall(require, "octo.utils")
+        if not ok then
+          return {}
+        end
+
+        local host = octo_utils.get_remote_host()
+        if type(host) == "string" and host ~= "" then
+          return { GH_HOST = host }
+        end
+        return {}
+      end,
     },
     config = function(_, opts)
       require("octo").setup(opts)
