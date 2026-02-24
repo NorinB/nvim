@@ -291,6 +291,7 @@ M.defaults = function()
     "cssls",
     "docker_compose_language_service",
     "kotlin_language_server",
+    "marksman",
     "pyright",
     "qmlls",
     "terraformls",

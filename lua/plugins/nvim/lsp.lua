@@ -414,6 +414,7 @@ return {
           "lua-language-server",
           "luacheck",
           "markdownlint",
+          "marksman",
           "netcoredbg",
           "prettier",
           "pyright",
