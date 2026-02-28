@@ -49,6 +49,8 @@ map("n", "<leader>A", "<CMD>wa<CR>", { desc = "General Save all buffers" })
 map("n", "<leader>C", "<CMD>%y+<CR>", { desc = "General Copy whole file" })
 map({ "n", "x" }, "<leader>n", ":norm ", { desc = "General Start norm command" })
 map("n", "<leader>r", ":%s//g<left><left>", { desc = "General Start substitute command" })
+map("n", "<leader>ca", "<cmd>CopyAbsolutePath<CR>", { desc = "General Copy absolute filepath to clipboard" })
+map("n", "<leader>cr", "<cmd>CopyRelativePath<CR>", { desc = "General Copy relative filepath to clipboard" })
 
 -- Line numbers
 map("n", "<leader>tln", "<CMD>set nu!<CR>", { desc = "Toggle Line number" })
