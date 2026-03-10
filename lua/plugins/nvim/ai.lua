@@ -131,12 +131,187 @@ return {
       },
     },
     config = function()
+      local port = 4097
+      local tmux_split_opts = { "-h", "-l", "30%" }
+
+      local function notify(msg, level)
+        vim.notify(msg, level or vim.log.levels.INFO, { title = "opencode.nvim" })
+      end
+
+      local function run_tmux(args)
+        if not vim.env.TMUX or vim.env.TMUX == "" then
+          return nil, "Not running inside tmux ($TMUX is empty)"
+        end
+
+        local cmd = vim.list_extend({ "tmux" }, args)
+        local res = vim.system(cmd, { text = true }):wait()
+
+        if res.code ~= 0 then
+          local err = (res.stderr and res.stderr ~= "") and res.stderr or ("tmux exit code " .. res.code)
+          return nil, vim.trim(err)
+        end
+
+        return vim.trim(res.stdout or ""), nil
+      end
+
+      local function pane_exists(pane_id)
+        if not pane_id or pane_id == "" then
+          return false
+        end
+        local out, err = run_tmux { "display-message", "-p", "-t", pane_id, "#{pane_id}" }
+        return out ~= nil and not err and out == pane_id
+      end
+
+      local function current_pane_id()
+        local out = run_tmux { "display-message", "-p", "#{pane_id}" }
+        return out
+      end
+
+      local function pane_window_id(pane_id)
+        local out = run_tmux { "display-message", "-p", "-t", pane_id, "#{window_id}" }
+        return out
+      end
+
+      local function pane_in_current_window(pane_id)
+        local current = current_pane_id()
+        if not current then
+          return false
+        end
+
+        local current_win = pane_window_id(current)
+        local target_win = pane_window_id(pane_id)
+        return current_win ~= nil and current_win == target_win
+      end
+
+      local function find_opencode_pane()
+        local out, err = run_tmux {
+          "list-panes",
+          "-a",
+          "-F",
+          "#{pane_id}\t#{pane_start_command}",
+        }
+        if not out then
+          return nil, err
+        end
+
+        local wanted = "opencode --port " .. port
+        for line in out:gmatch "[^\n]+" do
+          local pane_id, start_cmd = line:match "([^\t]+)\t(.*)"
+          if pane_id and start_cmd and start_cmd:find(wanted, 1, true) then
+            return pane_id, nil
+          end
+        end
+
+        return nil, nil
+      end
+
+      local state = { pane_id = nil }
+
+      local function start_server()
+        if state.pane_id and pane_exists(state.pane_id) then
+          return
+        end
+
+        local existing = find_opencode_pane()
+        if existing then
+          state.pane_id = existing
+          return
+        end
+
+        local args = vim.list_extend({
+          "split-window",
+          "-d",
+          "-P",
+          "-F",
+          "#{pane_id}",
+        }, tmux_split_opts)
+
+        table.insert(args, "ocx opencode --port " .. port)
+
+        local pane_id, err = run_tmux(args)
+        if not pane_id then
+          notify("Could not start opencode tmux pane: " .. err, vim.log.levels.ERROR)
+          return
+        end
+
+        state.pane_id = pane_id
+      end
+
+      local function stop_server()
+        local pane_id = state.pane_id
+        if not pane_id or not pane_exists(pane_id) then
+          pane_id = find_opencode_pane()
+        end
+
+        if not pane_id then
+          state.pane_id = nil
+          return
+        end
+
+        local _, err = run_tmux { "kill-pane", "-t", pane_id }
+        if err then
+          notify("Could not stop opencode tmux pane: " .. err, vim.log.levels.ERROR)
+          return
+        end
+
+        state.pane_id = nil
+      end
+
+      local function toggle_server()
+        local pane_id = state.pane_id
+        if not pane_id or not pane_exists(pane_id) then
+          pane_id = find_opencode_pane()
+          state.pane_id = pane_id
+        end
+
+        if not pane_id then
+          start_server()
+          return
+        end
+
+        if pane_in_current_window(pane_id) then
+          local _, err = run_tmux { "break-pane", "-d", "-s", pane_id, "-n", "opencode-hidden" }
+          if err then
+            notify("Could not hide opencode tmux pane: " .. err, vim.log.levels.ERROR)
+          end
+          return
+        end
+
+        local target = current_pane_id()
+        if not target then
+          notify("Could not determine current tmux pane", vim.log.levels.ERROR)
+          return
+        end
+
+        local join_opts = {}
+        for _, opt in ipairs(tmux_split_opts) do
+          table.insert(join_opts, opt)
+        end
+
+        local join_args = vim.list_extend({
+          "join-pane",
+          "-d",
+        }, join_opts)
+
+        vim.list_extend(join_args, {
+          "-s",
+          pane_id,
+          "-t",
+          target,
+        })
+
+        local _, err = run_tmux(join_args)
+        if err then
+          notify("Could not show opencode tmux pane: " .. err, vim.log.levels.ERROR)
+        end
+      end
+
       vim.g.opencode_opts = {
-        provider = {
-          enabled = "tmux",
-          tmux = {
-            options = "-h -l 30%",
-          },
+        server = {
+          port = port,
+          start = start_server,
+          stop = stop_server,
+          toggle = toggle_server,
         },
       }
       vim.o.autoread = true
