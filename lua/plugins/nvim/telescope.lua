@@ -108,7 +108,6 @@ return {
       },
       { "<leader>fgc", "<CMD>Telescope git_commits<CR>", desc = "Telescope Git commits" },
       { "<leader>fgs", "<CMD>Telescope git_status<CR>", desc = "Telescope Git status" },
-      { "<leader>fgh", "<CMD>Telescope git_file_history<CR>", desc = "Telescope Git file history" },
       { "<leader>fte", "<CMD>Telescope terms<CR>", desc = "Telescope Terminals" },
       {
         "<leader>fa",
@@ -359,7 +358,7 @@ return {
     "isak102/telescope-git-file-history.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" },
     keys = {
-      { "<leader>fgi", "<CMD>Telescope git_file_history<CR>", desc = "Telescope Git file history" },
+      { "<leader>fgh", "<CMD>Telescope git_file_history<CR>", desc = "Telescope Git file history" },
     },
     config = function()
       require("telescope").load_extension "git_file_history"
