@@ -105,12 +105,12 @@ return {
         },
         preview_split = "right",
         override = function(conf)
-          local new_conf = vim.tbl_deep_extend(
+          local layout = require "oil.layout"
+          return vim.tbl_deep_extend(
             "force",
             conf,
-            { relative = "editor", anchor = "SW", row = 1000, col = 2, width = 200, height = 50 }
+            { relative = "editor", anchor = "SW", row = layout.get_editor_height(), col = 2, width = 200, height = 50 }
           )
-          return new_conf
         end,
       },
       confirmation = {
