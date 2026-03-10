@@ -314,6 +314,17 @@ return {
           toggle = toggle_server,
         },
       }
+
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          if not state.pane_id or not pane_exists(state.pane_id) then
+            return
+          end
+          run_tmux { "kill-pane", "-t", state.pane_id }
+          state.pane_id = nil
+        end,
+      })
+
       vim.o.autoread = true
     end,
   },
