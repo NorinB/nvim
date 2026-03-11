@@ -131,7 +131,6 @@ return {
       },
     },
     config = function()
-      local port = 4097
       local tmux_split_opts = { "-h", "-l", "30%" }
 
       local function notify(msg, level)
@@ -162,6 +161,15 @@ return {
         return out ~= nil and not err and out == pane_id
       end
 
+      local function current_cwd()
+        local cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":p")
+        return (cwd:gsub("/$", ""))
+      end
+
+      local function start_command_for_cwd(cwd)
+        return "cd " .. vim.fn.shellescape(cwd) .. " && ocx opencode --port"
+      end
+
       local function current_pane_id()
         local out = run_tmux { "display-message", "-p", "#{pane_id}" }
         return out
@@ -183,7 +191,7 @@ return {
         return current_win ~= nil and current_win == target_win
       end
 
-      local function find_opencode_pane()
+      local function find_opencode_pane(cwd)
         local out, err = run_tmux {
           "list-panes",
           "-a",
@@ -194,7 +202,7 @@ return {
           return nil, err
         end
 
-        local wanted = "opencode --port " .. port
+        local wanted = start_command_for_cwd(cwd)
         for line in out:gmatch "[^\n]+" do
           local pane_id, start_cmd = line:match "([^\t]+)\t(.*)"
           if pane_id and start_cmd and start_cmd:find(wanted, 1, true) then
@@ -205,16 +213,23 @@ return {
         return nil, nil
       end
 
-      local state = { pane_id = nil }
+      local state = { panes_by_cwd = {} }
 
-      local function start_server()
-        if state.pane_id and pane_exists(state.pane_id) then
-          return
+      local function pane_for_cwd(cwd)
+        local pane_id = state.panes_by_cwd[cwd]
+        if pane_exists(pane_id) then
+          return pane_id
         end
 
-        local existing = find_opencode_pane()
+        pane_id = find_opencode_pane(cwd)
+        state.panes_by_cwd[cwd] = pane_id
+        return pane_id
+      end
+
+      local function start_server()
+        local cwd = current_cwd()
+        local existing = pane_for_cwd(cwd)
         if existing then
-          state.pane_id = existing
           return
         end
 
@@ -226,7 +241,7 @@ return {
           "#{pane_id}",
         }, tmux_split_opts)
 
-        table.insert(args, "ocx opencode --port " .. port)
+        table.insert(args, start_command_for_cwd(cwd))
 
         local pane_id, err = run_tmux(args)
         if not pane_id then
@@ -234,17 +249,15 @@ return {
           return
         end
 
-        state.pane_id = pane_id
+        state.panes_by_cwd[cwd] = pane_id
       end
 
       local function stop_server()
-        local pane_id = state.pane_id
-        if not pane_id or not pane_exists(pane_id) then
-          pane_id = find_opencode_pane()
-        end
+        local cwd = current_cwd()
+        local pane_id = pane_for_cwd(cwd)
 
         if not pane_id then
-          state.pane_id = nil
+          state.panes_by_cwd[cwd] = nil
           return
         end
 
@@ -254,15 +267,12 @@ return {
           return
         end
 
-        state.pane_id = nil
+        state.panes_by_cwd[cwd] = nil
       end
 
       local function toggle_server()
-        local pane_id = state.pane_id
-        if not pane_id or not pane_exists(pane_id) then
-          pane_id = find_opencode_pane()
-          state.pane_id = pane_id
-        end
+        local cwd = current_cwd()
+        local pane_id = pane_for_cwd(cwd)
 
         if not pane_id then
           start_server()
@@ -308,7 +318,6 @@ return {
 
       vim.g.opencode_opts = {
         server = {
-          port = port,
           start = start_server,
           stop = stop_server,
           toggle = toggle_server,
@@ -317,11 +326,12 @@ return {
 
       vim.api.nvim_create_autocmd("VimLeavePre", {
         callback = function()
-          if not state.pane_id or not pane_exists(state.pane_id) then
-            return
+          for cwd, pane_id in pairs(state.panes_by_cwd) do
+            if pane_exists(pane_id) then
+              run_tmux { "kill-pane", "-t", pane_id }
+            end
+            state.panes_by_cwd[cwd] = nil
           end
-          run_tmux { "kill-pane", "-t", state.pane_id }
-          state.pane_id = nil
         end,
       })
 
