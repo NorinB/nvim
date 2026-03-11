@@ -163,6 +163,18 @@ M.setup_keymaps = function()
       },
     }
   end, opts "Lsp Go to definition")
+  map("n", "<leader>lgsd", function()
+    vim.cmd.vsplit()
+    send_lsp_notification "Go to definition: "
+    require("telescope.builtin").lsp_definitions {
+      initial_mode = "normal",
+      layout_config = {
+        horizontal = {
+          preview_width = 0.55,
+        },
+      },
+    }
+  end, opts "Lsp Go to definition in split")
   map("n", "<leader>lh", function()
     vim.lsp.buf.hover {
       border = "rounded",
