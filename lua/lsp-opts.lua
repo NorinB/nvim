@@ -103,7 +103,7 @@ local function send_lsp_notification(message)
   -- only send notifications, if the folder path includes "projects"
   if spinner.should_show_spinner() then
     local current_word = vim.call("expand", "<cword>")
-    spinner.show(message .. current_word, "LSP")
+    spinner.show(message .. " '" .. current_word .. "'", "LSP")
   end
 end
 
@@ -149,11 +149,11 @@ M.setup_keymaps = function()
   map("n", "<leader>lS", "<CMD>LspStart<CR>", opts "Lsp Start")
 
   map("n", "<leader>lgD", function()
-    send_lsp_notification "Go to declaration: "
+    send_lsp_notification "Go to declaration of"
     vim.lsp.buf.declaration()
   end, opts "Lsp Go to declaration")
   map("n", "<leader>lgd", function()
-    send_lsp_notification "Go to definition: "
+    send_lsp_notification "Go to definition of"
     require("telescope.builtin").lsp_definitions {
       initial_mode = "normal",
       layout_config = {
@@ -165,7 +165,7 @@ M.setup_keymaps = function()
   end, opts "Lsp Go to definition")
   map("n", "<leader>lgsd", function()
     vim.cmd.vsplit()
-    send_lsp_notification "Go to definition: "
+    send_lsp_notification "Go to definition of"
     require("telescope.builtin").lsp_definitions {
       initial_mode = "normal",
       layout_config = {
@@ -181,7 +181,7 @@ M.setup_keymaps = function()
     }
   end, opts "Lsp hover information")
   map("n", "<leader>lgi", function()
-    send_lsp_notification "Go to implementation: "
+    send_lsp_notification "Go to implementation of"
     require("telescope.builtin").lsp_implementations {
       initial_mode = "normal",
       layout_config = {
@@ -192,7 +192,7 @@ M.setup_keymaps = function()
     }
   end, opts "Lsp Go to implementation")
   map("n", "<leader>lgci", function()
-    send_lsp_notification "Go to incoming callers: "
+    send_lsp_notification "Go to incoming callers of"
     require("telescope.builtin").lsp_incoming_calls {
       initial_mode = "normal",
       layout_config = {
@@ -203,7 +203,7 @@ M.setup_keymaps = function()
     }
   end, opts "Lsp Go to incoming calls")
   map("n", "<leader>lgco", function()
-    send_lsp_notification "Go to outgoing callers: "
+    send_lsp_notification "Go to outgoing callers of"
     require("telescope.builtin").lsp_outgoing_calls {
       initial_mode = "normal",
       layout_config = {
@@ -222,7 +222,7 @@ M.setup_keymaps = function()
   end, opts "Lsp List workspace folders")
 
   map("n", "<leader>lD", function()
-    send_lsp_notification "Go to type definitions: "
+    send_lsp_notification "Go to type definitions of"
     require("telescope.builtin").lsp_type_definitions {
       initial_mode = "normal",
       layout_config = {
@@ -238,7 +238,7 @@ M.setup_keymaps = function()
   end, opts "Lsp Rename")
 
   map("n", "<leader>lgr", function()
-    send_lsp_notification "Go to references: "
+    send_lsp_notification "Go to references of"
     require("telescope.builtin").lsp_references {
       initial_mode = "normal",
       layout_config = {
