@@ -256,7 +256,7 @@ return {
       }
       local opts = {
         options = {
-          theme = "catppuccin",
+          theme = "catppuccin-nvim",
           section_separators = separators.section_separators,
           component_separators = separators.component_separators,
           globalstatus = true,
