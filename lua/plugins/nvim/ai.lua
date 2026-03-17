@@ -180,6 +180,34 @@ return {
         return out
       end
 
+      local function reset_window_rename(window_id)
+        if not window_id or window_id == "" then
+          return
+        end
+
+        local _, auto_err = run_tmux { "set-window-option", "-t", window_id, "automatic-rename", "on" }
+        if auto_err then
+          notify("Could not re-enable tmux automatic-rename: " .. auto_err, vim.log.levels.ERROR)
+          return
+        end
+
+        -- local _, rename_err = run_tmux { "rename-window", "-u", "-t", window_id }
+        -- if rename_err then
+        --   notify("Could not reset tmux window name: " .. rename_err, vim.log.levels.ERROR)
+        --   return
+        -- end
+
+        run_tmux { "refresh-client", "-S" }
+      end
+
+      local function reset_current_window_rename()
+        local pane_id = current_pane_id()
+        if not pane_id then
+          return
+        end
+        reset_window_rename(pane_window_id(pane_id))
+      end
+
       local function pane_in_current_window(pane_id)
         local current = current_pane_id()
         if not current then
@@ -280,10 +308,15 @@ return {
         end
 
         if pane_in_current_window(pane_id) then
+          local current = current_pane_id()
+          local current_window = current and pane_window_id(current) or nil
           local _, err = run_tmux { "break-pane", "-d", "-s", pane_id, "-n", "opencode-hidden" }
           if err then
             notify("Could not hide opencode tmux pane: " .. err, vim.log.levels.ERROR)
+            return
           end
+
+          reset_window_rename(current_window)
           return
         end
 
@@ -313,7 +346,10 @@ return {
         local _, err = run_tmux(join_args)
         if err then
           notify("Could not show opencode tmux pane: " .. err, vim.log.levels.ERROR)
+          return
         end
+
+        reset_current_window_rename()
       end
 
       vim.g.opencode_opts = {
@@ -326,6 +362,7 @@ return {
 
       vim.api.nvim_create_autocmd("VimLeavePre", {
         callback = function()
+          reset_current_window_rename()
           for cwd, pane_id in pairs(state.panes_by_cwd) do
             if pane_exists(pane_id) then
               run_tmux { "kill-pane", "-t", pane_id }
